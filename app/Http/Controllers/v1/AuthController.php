@@ -35,32 +35,32 @@ class AuthController extends Controller
     public function login(Request $r)
     {
         $credentials = $r->validate([
-            'email'=>'required|email',
-            'password'=>'required'
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
 
-        if(Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $r->session()->regenerate();
             return redirect('/worm');
         }
 
-        return back()->withErrors(['email'=>'Неверные данные']);
+        return back()->withErrors(['email' => 'Неверные данные']);
     }
 
     public function register(Request $r)
     {
         $data = $r->validate([
-            'name'=>'required',
-            'email'=>'required|email|unique:users',
-            'password'=>'required|min:6'
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
         ]);
 
         $user = User::create([
-            'name'=>$data['name'],
-            'email'=>$data['email'],
-            'password'=>Hash::make($data['password'])
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
         ]);
-
+        $user->sendEmailVerificationNotification();
         Auth::login($user);
 
         return redirect('/worm');
@@ -68,7 +68,7 @@ class AuthController extends Controller
 
     public function forgot(Request $r)
     {
-        $r->validate(['email'=>'required|email']);
+        $r->validate(['email' => 'required|email']);
 
         Password::sendResetLink($r->only('email'));
 

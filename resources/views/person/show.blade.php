@@ -1,5 +1,17 @@
 @extends('layouts.app')
 
+@if(!auth()->user()->hasVerifiedEmail())
+    <div class="card" style="background:#fff7e6">
+        <p>
+            Нужно подтвердить email.
+        </p>
+        <form method="POST" action="{{ route('verification.send') }}">
+            @csrf
+            <button>Отправить письмо еще раз</button>
+        </form>
+    </div>
+@endif
+
 @section('content')
     <div class="card">
         <h2>Профиль</h2>

@@ -17,7 +17,9 @@ class WormController extends Controller
     public function feed(Request $r)
     {
         $user = $r->user();
-
+        if(!$user->hasVerifiedEmail()){
+            abort(403);
+        }
         if ($user->last_fed_at &&
             Carbon::parse($user->last_fed_at)->isToday()) {
 
